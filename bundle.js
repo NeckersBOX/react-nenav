@@ -46,12 +46,13 @@ var FolderView = _react2['default'].createClass({
         _react2['default'].createElement(
           'td',
           { className: _this2.props.style.folder_view.name },
-          file.name
+          _react2['default'].createElement('i', { className: _this2.props.style.folder_view.folder }),
+          ' ' + file.name
         ),
         _react2['default'].createElement(
           'td',
           { className: _this2.props.style.folder_view.type },
-          file.type
+          file.type == 'dir' ? 'DIR' : ''
         ),
         _react2['default'].createElement('td', { className: _this2.props.style.folder_view.size }),
         _react2['default'].createElement('td', { className: _this2.props.style.folder_view.date })
@@ -63,12 +64,13 @@ var FolderView = _react2['default'].createClass({
         _react2['default'].createElement(
           'td',
           { className: _this2.props.style.folder_view.name },
-          file.name
+          _react2['default'].createElement('i', { className: _this2.props.style.folder_view.file }),
+          ' ' + file.name
         ),
         _react2['default'].createElement(
           'td',
           { className: _this2.props.style.folder_view.type },
-          file.type
+          file.type == 'dir' ? 'DIR' : ''
         ),
         _react2['default'].createElement(
           'td',
@@ -226,7 +228,9 @@ var foundationStyle = {
 		name: 'text-left',
 		type: 'text-right',
 		size: 'text-right',
-		date: 'text-center'
+		date: 'text-center',
+		file: 'fi-page',
+		folder: 'fi-folder'
 	}
 };
 
