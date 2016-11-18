@@ -20,7 +20,7 @@ const FolderView = React.createClass ({
 
     return {
       currPathData: __currPathData,
-      filesSize: this.sumSize (__currPathData);
+      filesSize: this.sumSize (__currPathData)
     };
   },
   render () {
