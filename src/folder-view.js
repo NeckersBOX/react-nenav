@@ -13,7 +13,9 @@ const FolderView = React.createClass ({
     let __currPathData = this.orderData (
       orderAttr,
       orderType,
-      this.props.currPathData.data
+      Object.keys (this.props.currPathData.data).map ((file, idx) => [
+        Object.assign ({ name: file }, this.props.currPathData.data[file])
+      ])
     );
 
     return {
@@ -22,7 +24,25 @@ const FolderView = React.createClass ({
     };
   },
   render () {
-    console.log (this.state.currPathData);
+    let files = this.state.currPathData.map ((file, idx) => {
+      if ( file.type == 'dir' )
+        return (
+          <tr>
+            <td className={this.props.style.folder_view.name}>{file.name}</td>
+            <td className={this.props.style.folder_view.type}>{file.type}</td>
+            <td className={this.props.style.folder_view.size}></td>
+            <td className={this.props.style.folder_view.date}></td>
+          </tr>
+        );
+      return (
+        <tr>
+          <td className={this.props.style.folder_view.name}>{file.name}</td>
+          <td className={this.props.style.folder_view.type}>{file.type}</td>
+          <td className={this.props.style.folder_view.size}>{file.size}</td>
+          <td className={this.props.style.folder_view.date}>{file.date}</td>
+        </tr>
+      );
+    });
 
     return (
       <table className={this.props.style.folder_view.table}>
@@ -35,20 +55,28 @@ const FolderView = React.createClass ({
           </tr>
         </thead>
         <tbody>
+          {files}
         </tbody>
         <tfoot>
+          <tr>
+            <td colspan="4">
+              <strong>File:</strong>
+              {this.state.currPathData.length}
+              {' - '}
+              <strong>Size:</strong>
+              {this.state.filesSize}
+            </td>
+          </tr>
         </tfoot>
       </table>
     );
   },
   orderData (attr, sort_type, data) {
-    let indexData = Object.keys (data).map ((file, idx) => [idx, data[file]]);
-
-    return indexData.sort ((a, b) => {
+    return data.sort ((a, b) => {
       let val = (sort_type == 'asc' ) ? 1 : -1;
 
-      if ( a[1][attr] < b[1][attr] ) return -1 * val;
-      if ( a[1][attr] > b[1][attr] ) return +1 * val;
+      if ( a[attr] < b[attr] ) return -1 * val;
+      if ( a[attr] > b[attr] ) return +1 * val;
 
       return 0;
     });
@@ -57,8 +85,8 @@ const FolderView = React.createClass ({
     let size = 0;
 
     for ( let idx in data )
-      if ( data[idx][1].type == 'file' )
-        size += data[idx][1].size;
+      if ( data[idx].type == 'file' )
+        size += data[idx].size;
 
     return size;
   }
