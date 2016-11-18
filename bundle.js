@@ -5,6 +5,108 @@ Object.defineProperty(exports, '__esModule', {
   value: true
 });
 
+function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { 'default': obj }; }
+
+var _react = require('react');
+
+var _react2 = _interopRequireDefault(_react);
+
+var File = _react2['default'].createClass({
+  displayName: 'File',
+
+  getInitialState: function getInitialState() {
+    return {
+      name: this.props.name,
+      size: this.props.size,
+      type: this.props.type,
+      date: this.props.date
+    };
+  },
+  componentWillReceiveProps: function componentWillReceiveProps() {
+    this.setState({
+      name: this.props.name,
+      size: this.props.size,
+      type: this.props.type,
+      date: this.props.date
+    });
+  },
+  render: function render() {
+    return _react2['default'].createElement(
+      'tr',
+      null,
+      _react2['default'].createElement(
+        'td',
+        { className: this.props.style.folder_view.name },
+        _react2['default'].createElement('i', { className: this.props.style.folder_view.file }),
+        ' ' + this.state.name
+      ),
+      _react2['default'].createElement(
+        'td',
+        { className: this.props.style.folder_view.type },
+        this.state.type == 'dir' ? 'DIR' : ''
+      ),
+      _react2['default'].createElement(
+        'td',
+        { className: this.props.style.folder_view.size },
+        this.state.size
+      ),
+      _react2['default'].createElement(
+        'td',
+        { className: this.props.style.folder_view.date },
+        this.state.date
+      )
+    );
+  }
+});
+
+exports.File = File;
+var Folder = _react2['default'].createClass({
+  displayName: 'Folder',
+
+  getInitialState: function getInitialState() {
+    return { name: this.props.name };
+  },
+  componentWillReceiveProps: function componentWillReceiveProps() {
+    this.setState({ name: this.props.name });
+  },
+  render: function render() {
+    var _this = this;
+
+    return _react2['default'].createElement(
+      'tr',
+      null,
+      _react2['default'].createElement(
+        'td',
+        { className: this.props.style.folder_view.name },
+        _react2['default'].createElement(
+          'a',
+          { className: this.props.style.link,
+            onClick: function () {
+              return _this.props.onClick(_this.props.name);
+            } },
+          _react2['default'].createElement('i', { className: this.props.style.folder_view.folder }),
+          ' ' + this.state.name
+        )
+      ),
+      _react2['default'].createElement(
+        'td',
+        { className: this.props.style.folder_view.type },
+        'Folder'
+      ),
+      _react2['default'].createElement('td', { className: this.props.style.folder_view.size }),
+      _react2['default'].createElement('td', { className: this.props.style.folder_view.date })
+    );
+  }
+});
+exports.Folder = Folder;
+
+},{"react":undefined}],2:[function(require,module,exports){
+'use strict';
+
+Object.defineProperty(exports, '__esModule', {
+  value: true
+});
+
 var _extends = Object.assign || function (target) { for (var i = 1; i < arguments.length; i++) { var source = arguments[i]; for (var key in source) { if (Object.prototype.hasOwnProperty.call(source, key)) { target[key] = source[key]; } } } return target; };
 
 function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { 'default': obj }; }
@@ -12,6 +114,8 @@ function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { 'd
 var _react = require('react');
 
 var _react2 = _interopRequireDefault(_react);
+
+var _folderViewComponent = require('./folder-view-component');
 
 var FolderView = _react2['default'].createClass({
   displayName: 'FolderView',
@@ -40,49 +144,10 @@ var FolderView = _react2['default'].createClass({
     var _this2 = this;
 
     var files = this.state.currPathData.map(function (file, idx) {
-      if (file.type == 'dir') return _react2['default'].createElement(
-        'tr',
-        { key: idx },
-        _react2['default'].createElement(
-          'td',
-          { className: _this2.props.style.folder_view.name },
-          _react2['default'].createElement('i', { className: _this2.props.style.folder_view.folder }),
-          ' ' + file.name
-        ),
-        _react2['default'].createElement(
-          'td',
-          { className: _this2.props.style.folder_view.type },
-          file.type == 'dir' ? 'DIR' : ''
-        ),
-        _react2['default'].createElement('td', { className: _this2.props.style.folder_view.size }),
-        _react2['default'].createElement('td', { className: _this2.props.style.folder_view.date })
-      );
+      if (file.type == 'dir') return _react2['default'].createElement(_folderViewComponent.Folder, _extends({ key: idx }, file, {
+        onClick: _this2.props.nextPath, style: _this2.props.style }));
 
-      return _react2['default'].createElement(
-        'tr',
-        { key: idx },
-        _react2['default'].createElement(
-          'td',
-          { className: _this2.props.style.folder_view.name },
-          _react2['default'].createElement('i', { className: _this2.props.style.folder_view.file }),
-          ' ' + file.name
-        ),
-        _react2['default'].createElement(
-          'td',
-          { className: _this2.props.style.folder_view.type },
-          file.type == 'dir' ? 'DIR' : ''
-        ),
-        _react2['default'].createElement(
-          'td',
-          { className: _this2.props.style.folder_view.size },
-          file.size
-        ),
-        _react2['default'].createElement(
-          'td',
-          { className: _this2.props.style.folder_view.date },
-          file.date
-        )
-      );
+      return _react2['default'].createElement(_folderViewComponent.File, _extends({ key: idx }, file, { style: _this2.props.style }));
     });
 
     return _react2['default'].createElement(
@@ -163,7 +228,7 @@ var FolderView = _react2['default'].createClass({
 exports['default'] = FolderView;
 module.exports = exports['default'];
 
-},{"react":undefined}],2:[function(require,module,exports){
+},{"./folder-view-component":1,"react":undefined}],3:[function(require,module,exports){
 'use strict';
 
 Object.defineProperty(exports, '__esModule', {
@@ -210,7 +275,7 @@ var NavigationBar = _react2['default'].createClass({
 exports['default'] = NavigationBar;
 module.exports = exports['default'];
 
-},{"react":undefined}],3:[function(require,module,exports){
+},{"react":undefined}],4:[function(require,module,exports){
 "use strict";
 
 Object.defineProperty(exports, "__esModule", {
@@ -218,6 +283,7 @@ Object.defineProperty(exports, "__esModule", {
 });
 var foundationStyle = {
 	main_area: "small-12",
+	link: '',
 	navbar: {
 		area: "small-12",
 		btn: "primary button",
@@ -316,8 +382,12 @@ var Nenav = _react2['default'].createClass({
 			'div',
 			{ className: this.state.style.main_area },
 			_react2['default'].createElement(_navigationBar2['default'], { style: this.state.style, currPath: this.state.currPath }),
-			_react2['default'].createElement(_folderView2['default'], { style: this.state.style, currPathData: this.state.currPathData,
-				orderType: this.state.orderType, orderAttr: this.state.orderAttr })
+			_react2['default'].createElement(_folderView2['default'], {
+				nextPath: this.nextPath,
+				style: this.state.style,
+				currPathData: this.state.currPathData,
+				orderType: this.state.orderType,
+				orderAttr: this.state.orderAttr })
 		);
 	},
 	pathExist: function pathExist(path) {
@@ -345,10 +415,16 @@ var Nenav = _react2['default'].createClass({
 			console.error('React-Nenav: Error: pathExist (): ' + e.message);
 			youDontWantToSeeWhatHappenAfterThis();
 		}
+	},
+	nextPath: function nextPath(path) {
+		this.setState({
+			currPath: this.state.currPath + '/' + path,
+			currPathData: this.state.currPathData.data[path]
+		});
 	}
 });
 
 exports['default'] = Nenav;
 module.exports = exports['default'];
 
-},{"./folder-view":1,"./navigation-bar":2,"./nenav-styles":3,"react":undefined}]},{},[]);
+},{"./folder-view":2,"./navigation-bar":3,"./nenav-styles":4,"react":undefined}]},{},[]);
