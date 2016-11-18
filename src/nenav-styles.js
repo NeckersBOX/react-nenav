@@ -1,5 +1,6 @@
 export const foundationStyle = {
 	main_area: "small-12",
+  link: '',
 	navbar: {
 		area: "small-12",
 	  btn: "primary button",

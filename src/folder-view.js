@@ -1,4 +1,5 @@
 import React from 'react';
+import { File, Folder } from './folder-view-component';
 
 const FolderView = React.createClass ({
   getInitialState () {
@@ -28,33 +29,10 @@ const FolderView = React.createClass ({
   render () {
     let files = this.state.currPathData.map ((file, idx) => {
       if ( file.type == 'dir' )
-        return (
-          <tr key={idx}>
-            <td className={this.props.style.folder_view.name}>
-              <i className={this.props.style.folder_view.folder}></i>
-              {' ' + file.name}
-            </td>
-            <td className={this.props.style.folder_view.type}>
-              {file.type == 'dir' ? 'DIR' : ''}
-            </td>
-            <td className={this.props.style.folder_view.size}></td>
-            <td className={this.props.style.folder_view.date}></td>
-          </tr>
-        );
+        return <Folder key={idx} {...file}
+                 onClick={this.props.nextPath} style={this.props.style} />;
 
-      return (
-        <tr key={idx}>
-          <td className={this.props.style.folder_view.name}>
-            <i className={this.props.style.folder_view.file}></i>
-            {' ' + file.name}
-          </td>
-          <td className={this.props.style.folder_view.type}>
-            {file.type == 'dir' ? 'DIR' : ''}
-          </td>
-          <td className={this.props.style.folder_view.size}>{file.size}</td>
-          <td className={this.props.style.folder_view.date}>{file.date}</td>
-        </tr>
-      );
+      return <File key={idx} {...file} style={this.props.style} />;
     });
 
     return (

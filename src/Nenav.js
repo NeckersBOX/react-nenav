@@ -48,8 +48,12 @@ const Nenav = React.createClass ({
 		return (
 			<div className={this.state.style.main_area}>
 				<NavigationBar style={this.state.style} currPath={this.state.currPath} />
-				<FolderView style={this.state.style} currPathData={this.state.currPathData}
-				 	orderType={this.state.orderType} orderAttr={this.state.orderAttr} />
+				<FolderView
+					nextPath={this.nextPath}
+					style={this.state.style}
+					currPathData={this.state.currPathData}
+				 	orderType={this.state.orderType}
+					orderAttr={this.state.orderAttr} />
 			</div>
 		);
 	},
@@ -82,6 +86,12 @@ const Nenav = React.createClass ({
 			console.error ('React-Nenav: Error: pathExist (): ' + e.message);
 			youDontWantToSeeWhatHappenAfterThis ();
 		}
+	},
+	nextPath (path) {
+		this.setState ({
+			currPath: this.state.currPath + '/' + path,
+			currPathData: this.state.currPathData.data[path]
+		});
 	}
 });
 
