@@ -1,50 +1,117 @@
 require=(function e(t,n,r){function s(o,u){if(!n[o]){if(!t[o]){var a=typeof require=="function"&&require;if(!u&&a)return a(o,!0);if(i)return i(o,!0);var f=new Error("Cannot find module '"+o+"'");throw f.code="MODULE_NOT_FOUND",f}var l=n[o]={exports:{}};t[o][0].call(l.exports,function(e){var n=t[o][1][e];return s(n?n:e)},l,l.exports,e,t,n,r)}return n[o].exports}var i=typeof require=="function"&&require;for(var o=0;o<r.length;o++)s(r[o]);return s})({"react-nenav":[function(require,module,exports){
-'use strict';
+"use strict";
 
-Object.defineProperty(exports, '__esModule', {
+Object.defineProperty(exports, "__esModule", {
 	value: true
 });
 
-var _createClass = (function () { function defineProperties(target, props) { for (var i = 0; i < props.length; i++) { var descriptor = props[i]; descriptor.enumerable = descriptor.enumerable || false; descriptor.configurable = true; if ('value' in descriptor) descriptor.writable = true; Object.defineProperty(target, descriptor.key, descriptor); } } return function (Constructor, protoProps, staticProps) { if (protoProps) defineProperties(Constructor.prototype, protoProps); if (staticProps) defineProperties(Constructor, staticProps); return Constructor; }; })();
-
-var _get = function get(_x, _x2, _x3) { var _again = true; _function: while (_again) { var object = _x, property = _x2, receiver = _x3; _again = false; if (object === null) object = Function.prototype; var desc = Object.getOwnPropertyDescriptor(object, property); if (desc === undefined) { var parent = Object.getPrototypeOf(object); if (parent === null) { return undefined; } else { _x = parent; _x2 = property; _x3 = receiver; _again = true; desc = parent = undefined; continue _function; } } else if ('value' in desc) { return desc.value; } else { var getter = desc.get; if (getter === undefined) { return undefined; } return getter.call(receiver); } } };
-
-function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { 'default': obj }; }
-
-function _classCallCheck(instance, Constructor) { if (!(instance instanceof Constructor)) { throw new TypeError('Cannot call a class as a function'); } }
-
-function _inherits(subClass, superClass) { if (typeof superClass !== 'function' && superClass !== null) { throw new TypeError('Super expression must either be null or a function, not ' + typeof superClass); } subClass.prototype = Object.create(superClass && superClass.prototype, { constructor: { value: subClass, enumerable: false, writable: true, configurable: true } }); if (superClass) Object.setPrototypeOf ? Object.setPrototypeOf(subClass, superClass) : subClass.__proto__ = superClass; }
+function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { "default": obj }; }
 
 var _react = require('react');
 
 var _react2 = _interopRequireDefault(_react);
 
-var Nenav = (function (_React$Component) {
-	_inherits(Nenav, _React$Component);
+var foundation = {
+	main_area: "small-12",
+	path_area: "small-12",
+	path_btn: "primary button",
+	path_btn_group: "small expanded button-group"
+};
 
-	function Nenav() {
-		_classCallCheck(this, Nenav);
+var bootstrap = {
+	main_area: "col-xs-12",
+	path_area: "col-xs-12",
+	path_btn: "btn btn-primary",
+	path_btn_group: "btn-group btn-group-sm btn-group-justified"
+};
 
-		_get(Object.getPrototypeOf(Nenav.prototype), 'constructor', this).apply(this, arguments);
-	}
+var Nenav = _react2["default"].createClass({
+	displayName: "Nenav",
 
-	_createClass(Nenav, [{
-		key: 'render',
-		value: function render() {
-			return _react2['default'].createElement(
-				'h1',
-				null,
-				'Yeah, I am Nenav'
-			);
+	getInitialState: function getInitialState() {
+		if (this.props.data == null) {
+			console.error('React-Nenav: Error: this.props.data cannot be null');
+			youDontWantToSeeWhatHappenAfterThis();
 		}
-	}]);
 
-	return Nenav;
-})(_react2['default'].Component);
+		var __currPath = '/';
+		var __currPathData = this.props.data;
 
-;
+		if ('currPath' in this.props) {
+			__currPathData = this.pathExist(this.props.currPath);
+			__currPath = this.props.currPath;
+		} else __currPathData = this.props.data.data;
 
-exports['default'] = Nenav;
-module.exports = exports['default'];
+		var __style = foundation;
+		if ('style' in this.props) {
+			switch (this.props.style) {
+				case 'foundation':
+					__style = foundation;break;
+				case 'bootstrap':
+					__style = bootstrap;break;
+				default:
+					__style = this.props.style;break;
+			}
+		}
+
+		return { currPath: __currPath, currPathData: __currPathData, style: __style };
+	},
+	render: function render() {
+		var _this = this;
+
+		var currPathBar = this.state.currPath.split('/').map(function (folder, idx) {
+			if (folder == '' && idx == 0) folder = 'root';
+
+			return _react2["default"].createElement(
+				"button",
+				{ key: idx, className: _this.state.style.path_btn },
+				folder
+			);
+		});
+
+		return _react2["default"].createElement(
+			"div",
+			{ className: this.state.style.main_area },
+			_react2["default"].createElement(
+				"div",
+				{ className: this.state.style.path_area },
+				_react2["default"].createElement(
+					"div",
+					{ className: this.state.style.path_btn_group },
+					currPathBar
+				)
+			)
+		);
+	},
+	pathExist: function pathExist(path) {
+		try {
+			var splittedPath = path.split('/');
+			var verifiedPath = this.props.data;
+			var analyzedPath = '';
+
+			for (var idx in splittedPath) {
+				if (splittedPath[idx] == '' && idx == 0) {
+					if ('data' in this.props.data) {
+						analyzedPath = '/';
+						continue;
+					} else throw new Error('Root dir not found');
+				}
+
+				if (splittedPath[idx] in verifiedPath.data) {
+					verifiedPath = verifiedPath.data[splittedPath[idx]];
+					analyzedPath += splittedPath[idx];
+				} else throw new Error('Invalid folder: `' + splittedPath[idx] + '` in path: `' + analyzedPath + '`');
+			}
+
+			return verifiedPath;
+		} catch (e) {
+			console.error('React-Nenav: Error: pathExist (): ' + e.message);
+			youDontWantToSeeWhatHappenAfterThis();
+		}
+	}
+});
+
+exports["default"] = Nenav;
+module.exports = exports["default"];
 
 },{"react":undefined}]},{},[]);
