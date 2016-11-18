@@ -1,6 +1,6 @@
 {
   "name": "react-nenav",
-  "version": "1.4.3",
+  "version": "1.4.4",
   "description": "nenav",
   "main": "lib/Nenav.js",
   "author": "Davide Francesco Merico",
