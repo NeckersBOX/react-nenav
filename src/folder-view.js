@@ -13,29 +13,32 @@ const FolderView = React.createClass ({
     let __currPathData = this.orderData (
       orderAttr,
       orderType,
-      Object.keys (this.props.currPathData.data).map ((file, idx) => [
+      Object.keys (this.props.currPathData.data).map ((file, idx) =>
         Object.assign ({ name: file }, this.props.currPathData.data[file])
-      ])
+      )
     );
 
     return {
       currPathData: __currPathData,
-      filesSize: this.sumSize (__currPathData)
+      filesSize: __currPathData.reduce ((prev, curr) => {
+        return (curr.type == 'dir') ? prev : prev + parseInt (curr.size);
+      }, 0)
     };
   },
   render () {
     let files = this.state.currPathData.map ((file, idx) => {
       if ( file.type == 'dir' )
         return (
-          <tr>
+          <tr key={idx}>
             <td className={this.props.style.folder_view.name}>{file.name}</td>
             <td className={this.props.style.folder_view.type}>{file.type}</td>
             <td className={this.props.style.folder_view.size}></td>
             <td className={this.props.style.folder_view.date}></td>
           </tr>
         );
+
       return (
-        <tr>
+        <tr key={idx}>
           <td className={this.props.style.folder_view.name}>{file.name}</td>
           <td className={this.props.style.folder_view.type}>{file.type}</td>
           <td className={this.props.style.folder_view.size}>{file.size}</td>
@@ -59,7 +62,7 @@ const FolderView = React.createClass ({
         </tbody>
         <tfoot>
           <tr>
-            <td colspan="4">
+            <td colSpan="4">
               <strong>File:</strong>
               {this.state.currPathData.length}
               {' - '}
@@ -80,15 +83,6 @@ const FolderView = React.createClass ({
 
       return 0;
     });
-  },
-  sumSize (data) {
-    let size = 0;
-
-    for ( let idx in data )
-      if ( data[idx].type == 'file' )
-        size += data[idx].size;
-
-    return size;
   }
 });
 

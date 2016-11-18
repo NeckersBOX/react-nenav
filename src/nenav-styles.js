@@ -6,7 +6,7 @@ export const foundationStyle = {
     btn_group: "small expanded button-group"
 	},
 	folder_view: {
-		table: "table-scroll stack hover",
+		table: "table-scroll hover",
 		name: 'text-left',
 		type: 'text-right',
 		size: 'text-right',

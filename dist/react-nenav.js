@@ -51,14 +51,27 @@ var Nenav = _react2['default'].createClass({
 			}
 		}
 
-		return { currPath: __currPath, currPathData: __currPathData, style: __style };
+		var __orderType = null;
+		if ('orderType' in this.props) __orderType = this.props.orderType;
+
+		var __orderAttr = null;
+		if ('orderAttr' in this.props) __orderAttr = this.props.orderAttr;
+
+		return {
+			currPath: __currPath,
+			currPathData: __currPathData,
+			style: __style,
+			orderAttr: __orderAttr,
+			orderType: __orderType
+		};
 	},
 	render: function render() {
 		return _react2['default'].createElement(
 			'div',
 			{ className: this.state.style.main_area },
 			_react2['default'].createElement(_navigationBar2['default'], { style: this.state.style, currPath: this.state.currPath }),
-			_react2['default'].createElement(_folderView2['default'], { style: this.state.style, currPathData: this.state.currPathData })
+			_react2['default'].createElement(_folderView2['default'], { style: this.state.style, currPathData: this.state.currPathData,
+				orderType: this.state.orderType, orderAttr: this.state.orderAttr })
 		);
 	},
 	pathExist: function pathExist(path) {
@@ -101,6 +114,8 @@ Object.defineProperty(exports, '__esModule', {
   value: true
 });
 
+var _extends = Object.assign || function (target) { for (var i = 1; i < arguments.length; i++) { var source = arguments[i]; for (var key in source) { if (Object.prototype.hasOwnProperty.call(source, key)) { target[key] = source[key]; } } } return target; };
+
 function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { 'default': obj }; }
 
 var _react = (typeof window !== "undefined" ? window['React'] : typeof global !== "undefined" ? global['React'] : null);
@@ -111,12 +126,71 @@ var FolderView = _react2['default'].createClass({
   displayName: 'FolderView',
 
   getInitialState: function getInitialState() {
+    var _this = this;
+
+    var orderAttr = 'type';
+    if ('orderAttr' in this.props) orderAttr = this.props.orderAttr;
+
+    var orderType = 'asc';
+    if ('orderType' in this.props) orderType = this.props.orderType;
+
+    var __currPathData = this.orderData(orderAttr, orderType, Object.keys(this.props.currPathData.data).map(function (file, idx) {
+      return _extends({ name: file }, _this.props.currPathData.data[file]);
+    }));
+
     return {
-      currPathData: this.orderData('type', 'asc', this.props.currPathData)
+      currPathData: __currPathData,
+      filesSize: __currPathData.reduce(function (prev, curr) {
+        return curr.type == 'dir' ? prev : prev + parseInt(curr.size);
+      }, 0)
     };
   },
   render: function render() {
-    console.log(this.state.currPathData);
+    var _this2 = this;
+
+    var files = this.state.currPathData.map(function (file, idx) {
+      if (file.type == 'dir') return _react2['default'].createElement(
+        'tr',
+        { key: idx },
+        _react2['default'].createElement(
+          'td',
+          { className: _this2.props.style.folder_view.name },
+          file.name
+        ),
+        _react2['default'].createElement(
+          'td',
+          { className: _this2.props.style.folder_view.type },
+          file.type
+        ),
+        _react2['default'].createElement('td', { className: _this2.props.style.folder_view.size }),
+        _react2['default'].createElement('td', { className: _this2.props.style.folder_view.date })
+      );
+
+      return _react2['default'].createElement(
+        'tr',
+        { key: idx },
+        _react2['default'].createElement(
+          'td',
+          { className: _this2.props.style.folder_view.name },
+          file.name
+        ),
+        _react2['default'].createElement(
+          'td',
+          { className: _this2.props.style.folder_view.type },
+          file.type
+        ),
+        _react2['default'].createElement(
+          'td',
+          { className: _this2.props.style.folder_view.size },
+          file.size
+        ),
+        _react2['default'].createElement(
+          'td',
+          { className: _this2.props.style.folder_view.date },
+          file.date
+        )
+      );
+    });
 
     return _react2['default'].createElement(
       'table',
@@ -149,14 +223,46 @@ var FolderView = _react2['default'].createClass({
           )
         )
       ),
-      _react2['default'].createElement('tbody', null),
-      _react2['default'].createElement('tfoot', null)
+      _react2['default'].createElement(
+        'tbody',
+        null,
+        files
+      ),
+      _react2['default'].createElement(
+        'tfoot',
+        null,
+        _react2['default'].createElement(
+          'tr',
+          null,
+          _react2['default'].createElement(
+            'td',
+            { colSpan: '4' },
+            _react2['default'].createElement(
+              'strong',
+              null,
+              'File:'
+            ),
+            this.state.currPathData.length,
+            ' - ',
+            _react2['default'].createElement(
+              'strong',
+              null,
+              'Size:'
+            ),
+            this.state.filesSize
+          )
+        )
+      )
     );
   },
   orderData: function orderData(attr, sort_type, data) {
-    {/* TODO */}
-    return data.map(function (val) {
-      return val;
+    return data.sort(function (a, b) {
+      var val = sort_type == 'asc' ? 1 : -1;
+
+      if (a[attr] < b[attr]) return -1 * val;
+      if (a[attr] > b[attr]) return +1 * val;
+
+      return 0;
     });
   }
 });
@@ -228,7 +334,7 @@ var foundationStyle = {
 		btn_group: "small expanded button-group"
 	},
 	folder_view: {
-		table: "table-scroll stack hover",
+		table: "table-scroll hover",
 		name: 'text-left',
 		type: 'text-right',
 		size: 'text-right',
