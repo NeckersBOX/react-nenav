@@ -1,33 +1,29 @@
 (function(f){if(typeof exports==="object"&&typeof module!=="undefined"){module.exports=f()}else if(typeof define==="function"&&define.amd){define([],f)}else{var g;if(typeof window!=="undefined"){g=window}else if(typeof global!=="undefined"){g=global}else if(typeof self!=="undefined"){g=self}else{g=this}g.Nenav = f()}})(function(){var define,module,exports;return (function e(t,n,r){function s(o,u){if(!n[o]){if(!t[o]){var a=typeof require=="function"&&require;if(!u&&a)return a(o,!0);if(i)return i(o,!0);var f=new Error("Cannot find module '"+o+"'");throw f.code="MODULE_NOT_FOUND",f}var l=n[o]={exports:{}};t[o][0].call(l.exports,function(e){var n=t[o][1][e];return s(n?n:e)},l,l.exports,e,t,n,r)}return n[o].exports}var i=typeof require=="function"&&require;for(var o=0;o<r.length;o++)s(r[o]);return s})({1:[function(require,module,exports){
 (function (global){
-"use strict";
+'use strict';
 
-Object.defineProperty(exports, "__esModule", {
+Object.defineProperty(exports, '__esModule', {
 	value: true
 });
 
-function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { "default": obj }; }
+function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { 'default': obj }; }
 
 var _react = (typeof window !== "undefined" ? window['React'] : typeof global !== "undefined" ? global['React'] : null);
 
 var _react2 = _interopRequireDefault(_react);
 
-var foundation = {
-	main_area: "small-12",
-	path_area: "small-12",
-	path_btn: "primary button",
-	path_btn_group: "small expanded button-group"
-};
+var _navigationBar = require('./navigation-bar');
 
-var bootstrap = {
-	main_area: "col-xs-12",
-	path_area: "col-xs-12",
-	path_btn: "btn btn-primary",
-	path_btn_group: "btn-group btn-group-sm btn-group-justified"
-};
+var _navigationBar2 = _interopRequireDefault(_navigationBar);
 
-var Nenav = _react2["default"].createClass({
-	displayName: "Nenav",
+var _folderView = require('./folder-view');
+
+var _folderView2 = _interopRequireDefault(_folderView);
+
+var _nenavStyles = require('./nenav-styles');
+
+var Nenav = _react2['default'].createClass({
+	displayName: 'Nenav',
 
 	getInitialState: function getInitialState() {
 		if (this.props.data == null) {
@@ -43,13 +39,13 @@ var Nenav = _react2["default"].createClass({
 			__currPath = this.props.currPath;
 		} else __currPathData = this.props.data.data;
 
-		var __style = foundation;
+		var __style = _nenavStyles.foundationStyle;
 		if ('style' in this.props) {
 			switch (this.props.style) {
 				case 'foundation':
-					__style = foundation;break;
+					__style = _nenavStyles.foundationStyle;break;
 				case 'bootstrap':
-					__style = bootstrap;break;
+					__style = _nenavStyles.bootstrapStyle;break;
 				default:
 					__style = this.props.style;break;
 			}
@@ -58,30 +54,11 @@ var Nenav = _react2["default"].createClass({
 		return { currPath: __currPath, currPathData: __currPathData, style: __style };
 	},
 	render: function render() {
-		var _this = this;
-
-		var currPathBar = this.state.currPath.split('/').map(function (folder, idx) {
-			if (folder == '' && idx == 0) folder = 'root';
-
-			return _react2["default"].createElement(
-				"button",
-				{ key: idx, className: _this.state.style.path_btn },
-				folder
-			);
-		});
-
-		return _react2["default"].createElement(
-			"div",
+		return _react2['default'].createElement(
+			'div',
 			{ className: this.state.style.main_area },
-			_react2["default"].createElement(
-				"div",
-				{ className: this.state.style.path_area },
-				_react2["default"].createElement(
-					"div",
-					{ className: this.state.style.path_btn_group },
-					currPathBar
-				)
-			)
+			_react2['default'].createElement(_navigationBar2['default'], { style: this.state.style, currPath: this.state.currPath }),
+			_react2['default'].createElement(_folderView2['default'], { style: this.state.style, currPathData: this.state.currPathData })
 		);
 	},
 	pathExist: function pathExist(path) {
@@ -112,9 +89,163 @@ var Nenav = _react2["default"].createClass({
 	}
 });
 
-exports["default"] = Nenav;
-module.exports = exports["default"];
+exports['default'] = Nenav;
+module.exports = exports['default'];
 
 }).call(this,typeof global !== "undefined" ? global : typeof self !== "undefined" ? self : typeof window !== "undefined" ? window : {})
+},{"./folder-view":2,"./navigation-bar":3,"./nenav-styles":4}],2:[function(require,module,exports){
+(function (global){
+'use strict';
+
+Object.defineProperty(exports, '__esModule', {
+  value: true
+});
+
+function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { 'default': obj }; }
+
+var _react = (typeof window !== "undefined" ? window['React'] : typeof global !== "undefined" ? global['React'] : null);
+
+var _react2 = _interopRequireDefault(_react);
+
+var FolderView = _react2['default'].createClass({
+  displayName: 'FolderView',
+
+  getInitialState: function getInitialState() {
+    return {
+      currPathData: this.orderData('type', 'asc', this.props.currPathData)
+    };
+  },
+  render: function render() {
+    console.log(this.state.currPathData);
+
+    return _react2['default'].createElement(
+      'table',
+      { className: this.props.style.folder_view.table },
+      _react2['default'].createElement(
+        'thead',
+        null,
+        _react2['default'].createElement(
+          'tr',
+          null,
+          _react2['default'].createElement(
+            'th',
+            { className: this.props.style.folder_view.name },
+            'Name'
+          ),
+          _react2['default'].createElement(
+            'th',
+            { className: this.props.style.folder_view.type },
+            'Type'
+          ),
+          _react2['default'].createElement(
+            'th',
+            { className: this.props.style.folder_view.size },
+            'Size'
+          ),
+          _react2['default'].createElement(
+            'th',
+            { className: this.props.style.folder_view.date },
+            'Date'
+          )
+        )
+      ),
+      _react2['default'].createElement('tbody', null),
+      _react2['default'].createElement('tfoot', null)
+    );
+  },
+  orderData: function orderData(attr, sort_type, data) {
+    {/* TODO */}
+    return data.map(function (val) {
+      return val;
+    });
+  }
+});
+
+exports['default'] = FolderView;
+module.exports = exports['default'];
+
+}).call(this,typeof global !== "undefined" ? global : typeof self !== "undefined" ? self : typeof window !== "undefined" ? window : {})
+},{}],3:[function(require,module,exports){
+(function (global){
+'use strict';
+
+Object.defineProperty(exports, '__esModule', {
+  value: true
+});
+
+function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { 'default': obj }; }
+
+var _react = (typeof window !== "undefined" ? window['React'] : typeof global !== "undefined" ? global['React'] : null);
+
+var _react2 = _interopRequireDefault(_react);
+
+var NavigationBar = _react2['default'].createClass({
+  displayName: 'NavigationBar',
+
+  getInitialState: function getInitialState() {
+    return { currPathElements: this.props.currPath.split('/') };
+  },
+  render: function render() {
+    var _this = this;
+
+    var currPathBar = this.state.currPathElements.map(function (folder, idx) {
+      if (folder == '' && idx == 0) folder = 'root';
+
+      return _react2['default'].createElement(
+        'button',
+        { key: idx, className: _this.props.style.navbar.btn },
+        folder
+      );
+    });
+
+    return _react2['default'].createElement(
+      'div',
+      { className: this.props.style.navbar.area },
+      _react2['default'].createElement(
+        'div',
+        { className: this.props.style.navbar.btn_group },
+        currPathBar
+      )
+    );
+  }
+});
+
+exports['default'] = NavigationBar;
+module.exports = exports['default'];
+
+}).call(this,typeof global !== "undefined" ? global : typeof self !== "undefined" ? self : typeof window !== "undefined" ? window : {})
+},{}],4:[function(require,module,exports){
+"use strict";
+
+Object.defineProperty(exports, "__esModule", {
+	value: true
+});
+var foundationStyle = {
+	main_area: "small-12",
+	navbar: {
+		area: "small-12",
+		btn: "primary button",
+		btn_group: "small expanded button-group"
+	},
+	folder_view: {
+		table: "table-scroll stack hover",
+		name: 'text-left',
+		type: 'text-right',
+		size: 'text-right',
+		date: 'text-center'
+	}
+};
+
+exports.foundationStyle = foundationStyle;
+var bootstrapStyle = {
+	main_area: "col-xs-12",
+	navbar: {
+		area: "col-xs-12",
+		btn: "btn btn-primary",
+		btn_group: "btn-group btn-group-sm btn-group-justified"
+	}
+};
+exports.bootstrapStyle = bootstrapStyle;
+
 },{}]},{},[1])(1)
 });

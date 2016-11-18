@@ -22,13 +22,20 @@ const path_data = {
 		'README.md': { type: 'file', size: '30000', date: '2016-04-10' },
 		'LICENSE': { type: 'file', size: '25000', date: '2016-01-09' }
 	}
-}
+};
+
+const nenav_conf = {
+	currPath: '/src',
+	orderAttr: 'type',
+	orderType: 'asc',
+	style: 'foundation'
+};
 
 var App = React.createClass({
 	render () {
 		return (
 			<div>
-				<Nenav data={path_data} currPath="/src/lib" style='foundation' />
+				<Nenav data={path_data} {...nenav_conf} />
 			</div>
 		);
 	}

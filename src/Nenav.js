@@ -1,18 +1,7 @@
 import React from 'react';
-
-const foundation = {
-	main_area: "small-12",
-	path_area: "small-12",
-	path_btn: "primary button",
-	path_btn_group: "small expanded button-group"
-};
-
-const bootstrap = {
-	main_area: "col-xs-12",
-	path_area: "col-xs-12",
-	path_btn: "btn btn-primary",
-	path_btn_group: "btn-group btn-group-sm btn-group-justified"
-};
+import NavigationBar from './navigation-bar';
+import FolderView from './folder-view';
+import { foundationStyle, bootstrapStyle } from './nenav-styles';
 
 const Nenav = React.createClass ({
 	getInitialState () {
@@ -30,35 +19,37 @@ const Nenav = React.createClass ({
 		}
 		else __currPathData = this.props.data.data;
 
-		let __style = foundation;
+		let __style = foundationStyle;
 		if ( 'style' in this.props ) {
 			switch (this.props.style) {
-				case 'foundation': __style = foundation; break;
-				case 'bootstrap': __style = bootstrap; break;
+				case 'foundation': __style = foundationStyle; break;
+				case 'bootstrap': __style = bootstrapStyle; break;
 				default: __style = this.props.style; break;
 			}
 		}
 
-		return { currPath: __currPath, currPathData: __currPathData, style: __style	};
+		let __orderType = null;
+		if ( 'orderType' in this.props )
+			   __orderType = this.props.orderType;
+
+		let __orderAttr = null;
+		if ( 'orderAttr' in this.props )
+			   __orderAttr = this.props.orderAttr;
+
+		return {
+			currPath: __currPath,
+			currPathData: __currPathData,
+			style: __style,
+			orderAttr: __orderAttr,
+			orderType: __orderType
+		};
 	},
 	render () {
-		let currPathBar = this.state.currPath.split ('/').map ((folder, idx) => {
-			if ( folder == '' && idx == 0 ) folder = 'root';
-
-			return (
-				<button key={idx} className={this.state.style.path_btn}>
-					{folder}
-				</button>
-			);
-		});
-
 		return (
 			<div className={this.state.style.main_area}>
-				<div className={this.state.style.path_area}>
-					<div className={this.state.style.path_btn_group}>
-						{currPathBar}
-					</div>
-				</div>
+				<NavigationBar style={this.state.style} currPath={this.state.currPath} />
+				<FolderView style={this.state.style} currPathData={this.state.currPathData}
+				 	orderType={this.state.orderType} orderAttr={this.state.orderAttr} />
 			</div>
 		);
 	},
