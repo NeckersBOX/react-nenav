@@ -30,8 +30,13 @@ const FolderView = React.createClass ({
       if ( file.type == 'dir' )
         return (
           <tr key={idx}>
-            <td className={this.props.style.folder_view.name}>{file.name}</td>
-            <td className={this.props.style.folder_view.type}>{file.type}</td>
+            <td className={this.props.style.folder_view.name}>
+              <i className={this.props.style.folder_view.folder}></i>
+              {' ' + file.name}
+            </td>
+            <td className={this.props.style.folder_view.type}>
+              {file.type == 'dir' ? 'DIR' : ''}
+            </td>
             <td className={this.props.style.folder_view.size}></td>
             <td className={this.props.style.folder_view.date}></td>
           </tr>
@@ -39,8 +44,13 @@ const FolderView = React.createClass ({
 
       return (
         <tr key={idx}>
-          <td className={this.props.style.folder_view.name}>{file.name}</td>
-          <td className={this.props.style.folder_view.type}>{file.type}</td>
+          <td className={this.props.style.folder_view.name}>
+            <i className={this.props.style.folder_view.file}></i>
+            {' ' + file.name}
+          </td>
+          <td className={this.props.style.folder_view.type}>
+            {file.type == 'dir' ? 'DIR' : ''}
+          </td>
           <td className={this.props.style.folder_view.size}>{file.size}</td>
           <td className={this.props.style.folder_view.date}>{file.date}</td>
         </tr>

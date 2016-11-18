@@ -10,7 +10,9 @@ export const foundationStyle = {
 		name: 'text-left',
 		type: 'text-right',
 		size: 'text-right',
-		date: 'text-center'
+		date: 'text-center',
+    file: 'fi-page',
+    folder: 'fi-folder'
 	}
 };
 
