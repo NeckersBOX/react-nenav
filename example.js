@@ -1,6 +1,8 @@
 require=(function e(t,n,r){function s(o,u){if(!n[o]){if(!t[o]){var a=typeof require=="function"&&require;if(!u&&a)return a(o,!0);if(i)return i(o,!0);var f=new Error("Cannot find module '"+o+"'");throw f.code="MODULE_NOT_FOUND",f}var l=n[o]={exports:{}};t[o][0].call(l.exports,function(e){var n=t[o][1][e];return s(n?n:e)},l,l.exports,e,t,n,r)}return n[o].exports}var i=typeof require=="function"&&require;for(var o=0;o<r.length;o++)s(r[o]);return s})({1:[function(require,module,exports){
 'use strict';
 
+var _extends = Object.assign || function (target) { for (var i = 1; i < arguments.length; i++) { var source = arguments[i]; for (var key in source) { if (Object.prototype.hasOwnProperty.call(source, key)) { target[key] = source[key]; } } } return target; };
+
 var React = require('react');
 var ReactDOM = require('react-dom');
 var Nenav = require('react-nenav');
@@ -27,6 +29,13 @@ var path_data = {
 	}
 };
 
+var nenav_conf = {
+	currPath: '/src',
+	orderAttr: 'type',
+	orderType: 'asc',
+	style: 'foundation'
+};
+
 var App = React.createClass({
 	displayName: 'App',
 
@@ -34,7 +43,7 @@ var App = React.createClass({
 		return React.createElement(
 			'div',
 			null,
-			React.createElement(Nenav, { data: path_data, currPath: '/src/lib', style: 'foundation' })
+			React.createElement(Nenav, _extends({ data: path_data }, nenav_conf))
 		);
 	}
 });
