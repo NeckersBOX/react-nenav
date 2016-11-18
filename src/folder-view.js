@@ -10,10 +10,15 @@ const FolderView = React.createClass ({
     if ( 'orderType' in this.props )
          orderType = this.props.orderType;
 
+    let __currPathData = this.orderData (
+      orderAttr,
+      orderType,
+      this.props.currPathData.data
+    );
+
     return {
-      currPathData: this.orderData (
-        orderAttr, orderType, this.props.currPathData.data
-      )
+      currPathData: __currPathData,
+      filesSize: this.sumSize (__currPathData);
     };
   },
   render () {
@@ -47,6 +52,15 @@ const FolderView = React.createClass ({
 
       return 0;
     });
+  },
+  sumSize (data) {
+    let size = 0;
+
+    for ( let idx in data )
+      if ( data[idx][1].type == 'file' )
+        size += data[idx][1].size;
+
+    return size;
   }
 });
 
