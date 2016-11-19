@@ -2301,6 +2301,7 @@ var Nenav = _react2['default'].createClass({
 		this.analyzeProps();
 	},
 	analyzeProps: function analyzeProps() {
+		console.log(this.props);
 		if ('data' in this.props) store.dispatch({ type: 'SET_DATA', data: this.props.data });
 
 		if ('path' in this.props) {
