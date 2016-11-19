@@ -1,7 +1,7 @@
 import { foundationStyle, bootstrapStyle } from './nenav-styles';
 
 const initState = {
-  path: '/',
+  path: '',
   style: foundationStyle,
   data: { data: {} },
   data_sort: {

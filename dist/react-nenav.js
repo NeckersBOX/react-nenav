@@ -2107,7 +2107,7 @@ var _extends = Object.assign || function (target) { for (var i = 1; i < argument
 var _nenavStyles = require('./nenav-styles');
 
 var initState = {
-  path: '/',
+  path: '',
   style: _nenavStyles.foundationStyle,
   data: { data: {} },
   data_sort: {
@@ -2302,10 +2302,30 @@ var foundationStyle = {
 exports.foundationStyle = foundationStyle;
 var bootstrapStyle = {
   main_area: "col-xs-12",
+  link: '',
   navbar: {
     area: "col-xs-12",
     btn: "btn btn-primary",
-    btn_group: "btn-group btn-group-sm btn-group-justified"
+    btn_group: "btn-group btn-group-sm"
+  },
+  folder_view: {
+    table: "table table-hovered table-striped",
+    name: 'text-left',
+    type: 'text-right',
+    size: 'text-right',
+    date: 'text-center'
+  },
+  file: {
+    main_area: 'col-xs-10 col-xs-offset-1',
+    pre: 'prettyprint',
+    date: 'label label-default'
+  },
+  icon: {
+    file: 'glyphicon glyphicon-file',
+    folder: 'glyphicon glyphicon-folder-close',
+    arrow_up: 'glyphicon glyphicon-chevron-up',
+    arrow_down: 'glyphicon glyphicon-chevron-down',
+    back: 'pull-right glyphicon glyphicon-remove'
   }
 };
 exports.bootstrapStyle = bootstrapStyle;

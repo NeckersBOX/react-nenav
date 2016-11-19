@@ -60,7 +60,39 @@ An example of a files view structure.
 
 You can also generate a view like this with this PHP code:
 
-__GET_PATHDATA_FROM_PHP__
+```
+<?php
+  function path_data ($path) {
+    $data = array ( 'type' => 'dir', 'data' => array () );
+
+    if ( is_dir ($path) ) {
+      if ( $dh = opendir ($path) ) {
+        while ( ($file = readdir ($dh)) !== false ) {
+            if ( $file == '.' or $file == '..' ) continue;
+
+            if ( is_dir ($path.'/'.$file) ) {
+              $data['data'][$file] = path_data ($path.'/'.$file);
+            }
+            else {
+              $data['data'][$file] = array (
+                'type' => 'file',
+                'size' => filesize ($path.'/'.$file),
+                'date' => date ("d-m-Y", filemtime($path.'/'.$file))
+              );
+            }
+        }
+        closedir($dh);
+      }
+    }
+
+    return $data;
+  }
+
+  $path = '.';
+
+  echo json_encode (path_data ($path));
+?>
+```
 
 You have to provide as well a function to read a request file. This function
 will be like this:
@@ -76,9 +108,19 @@ const getFileData = (file_path, resultFunc) => {
 }
 ```
 
-This is another example in PHP that do this action:
+This is another example in PHP to do this action:
 
-__GET_FILEDATA_FROM_PHP__
+```
+<?php
+  $path = '.'.some_security ($_GET['file']);
+
+  function some_security ($path) {
+    return implode ('/', array_diff (explode ('/', $path), array ('.', '..')));
+  }
+
+  echo file_get_contents ($path);
+?>
+```
 
 Have done that you can immediatly use the **Nenav** in this way:
 
@@ -158,7 +200,7 @@ You can pass it to **Nenav Component** with: `<Nenav {...nenav_conf} />`.
 
 ```
 const initState = {
-  path: '/',
+  path: '',
   style: foundationStyle,
   data: { data: {} },
   data_sort: {
