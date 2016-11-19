@@ -1660,7 +1660,7 @@ var File = _react2['default'].createClass({
           'a',
           { className: this.props.style.link,
             onClick: function () {
-              return _this.props.dataFunc(_this.props.path + _this.props.name);
+              return _this.props.onClick(_this.props.path + _this.props.name);
             } },
           _react2['default'].createElement('i', { className: this.props.style.icon.file }),
           ' ' + this.props.name
@@ -1741,24 +1741,11 @@ var _nenavStore = require('./nenav-store');
 
 var _folderViewComponent = require('./folder-view-component');
 
-var FolderViewComponent = _react2['default'].createClass({
-  displayName: 'FolderViewComponent',
+var ListFiles = _react2['default'].createClass({
+  displayName: 'ListFiles',
 
   render: function render() {
     var _this = this;
-
-    var files = this.props.data.map(function (file, idx) {
-      if (file.type == 'dir') return _react2['default'].createElement(_folderViewComponent.Folder, _extends({ key: idx }, file, { style: _this.props.style,
-        onClick: function () {
-          return _this.props.dispatch({
-            type: 'NEXT_DIR', dir: file.name
-          });
-        } }));
-
-      return _react2['default'].createElement(_folderViewComponent.File, _extends({ key: idx }, file, { style: _this.props.style,
-        humanSize: _this.humanSize, dataFunc: _this.props.dataFunc,
-        path: '/' + _this.props.path.slice(1).join('/') + '/' }));
-    });
 
     return _react2['default'].createElement(
       'table',
@@ -1822,7 +1809,7 @@ var FolderViewComponent = _react2['default'].createClass({
       _react2['default'].createElement(
         'tbody',
         null,
-        files
+        this.props.files
       ),
       _react2['default'].createElement(
         'tfoot',
@@ -1841,7 +1828,7 @@ var FolderViewComponent = _react2['default'].createClass({
               return val.type == 'dir';
             }).length,
             ' Directories',
-            ' - ' + this.humanSize(this.props.data.reduce(function (prev_size, curr_file) {
+            ' - ' + this.props.humanSize(this.props.data.reduce(function (prev_size, curr_file) {
               if (curr_file.type == 'dir') return prev_size;
               return prev_size + parseInt(curr_file.size);
             }, 0))
@@ -1849,6 +1836,101 @@ var FolderViewComponent = _react2['default'].createClass({
         )
       )
     );
+  },
+  getIcon: function getIcon(attr) {
+    if (attr != this.props.data_sort.attr) return '';
+
+    if (this.props.data_sort.type == 'asc') return this.props.style.icon.arrow_down;
+
+    return this.props.style.icon.arrow_up;
+  }
+});
+
+var ShowFile = _react2['default'].createClass({
+  displayName: 'ShowFile',
+
+  render: function render() {
+    return _react2['default'].createElement(
+      'div',
+      { className: this.props.style.file.main_area },
+      _react2['default'].createElement(
+        'h3',
+        null,
+        _react2['default'].createElement(
+          'a',
+          { className: this.props.style.link, onClick: this.props.backFunc },
+          _react2['default'].createElement('i', { className: this.props.style.icon.back })
+        ),
+        ' ' + this.props.name + ' ',
+        _react2['default'].createElement(
+          'small',
+          null,
+          this.props.humanSize(this.props.size)
+        )
+      ),
+      _react2['default'].createElement(
+        'pre',
+        { className: this.props.style.file.pre },
+        _react2['default'].createElement(
+          'code',
+          { className: this.props.style.file.code },
+          this.props.content
+        )
+      ),
+      _react2['default'].createElement(
+        'p',
+        { className: this.props.style.file.date },
+        this.props.date
+      )
+    );
+  }
+});
+
+var FolderViewComponent = _react2['default'].createClass({
+  displayName: 'FolderViewComponent',
+
+  getInitialState: function getInitialState() {
+    return { file_info: null };
+  },
+  render: function render() {
+    var _this2 = this;
+
+    var files = this.props.data.map(function (file, idx) {
+      if (file.type == 'dir') return _react2['default'].createElement(_folderViewComponent.Folder, _extends({ key: idx
+      }, file, {
+        style: _this2.props.style,
+        onClick: function () {
+          return _this2.props.dispatch({
+            type: 'NEXT_DIR', dir: file.name
+          });
+        }
+      }));
+
+      var currentPath = _this2.props.path.length > 1 ? '/' : '';
+      currentPath += _this2.props.path.slice(1).join('/') + '/';
+
+      return _react2['default'].createElement(_folderViewComponent.File, _extends({ key: idx
+      }, file, {
+        style: _this2.props.style,
+        humanSize: _this2.humanSize,
+        path: currentPath,
+        onClick: function (path) {
+          _this2.setState({ file_info: _extends({}, file) });
+          _this2.props.dataFunc(path, _this2.showFile);
+        }
+      }));
+    });
+
+    if (this.props.list_type == 'dir') return _react2['default'].createElement(ListFiles, _extends({
+      humanSize: this.humanSize
+    }, this.props, {
+      files: files }));
+
+    return _react2['default'].createElement(ShowFile, _extends({
+      humanSize: this.humanSize
+    }, this.props.file_info, {
+      backFunc: this.hideFile,
+      style: this.props.style }));
   },
   humanSize: function humanSize(byte_size) {
     var units = ['KB', 'MB', 'GB', 'TB'];
@@ -1864,12 +1946,14 @@ var FolderViewComponent = _react2['default'].createClass({
 
     return byte_size.toFixed(2) + ' ' + units[units_idx];
   },
-  getIcon: function getIcon(attr) {
-    if (attr != this.props.data_sort.attr) return '';
-
-    if (this.props.data_sort.type == 'asc') return this.props.style.icon.arrow_down;
-
-    return this.props.style.icon.arrow_up;
+  showFile: function showFile(result) {
+    this.props.dispatch({
+      type: 'SHOW_FILE_INFO',
+      info: _extends({}, this.state.file_info, { content: result })
+    });
+  },
+  hideFile: function hideFile() {
+    this.props.dispatch({ type: 'SHOW_FILES_LIST' });
   }
 });
 
@@ -1947,7 +2031,9 @@ var initState = {
     attr: 'type',
     type: 'asc'
   },
-  dataFunc: console.log
+  dataFunc: console.log,
+  list_type: 'dir',
+  file_info: null
 };
 
 var getSplittedPath = function getSplittedPath(path) {
@@ -2010,10 +2096,16 @@ var reducer = function reducer(state, action) {
       validatePath(state);
       break;
     case 'NEXT_DIR':
-      return _extends({}, state, { path: state.path + '/' + action.dir });
+      return _extends({}, state, {
+        path: state.path + '/' + action.dir,
+        list_type: 'dir',
+        file_info: null
+      });
     case 'PREV_DIR':
       return _extends({}, state, {
-        path: state.path.split('/').slice(0, action.index + 1).join('/')
+        path: state.path.split('/').slice(0, action.index + 1).join('/'),
+        list_type: 'dir',
+        file_info: null
       });
     case 'CHANGE_DATA_SORT':
       return _extends({}, state, {
@@ -2021,6 +2113,13 @@ var reducer = function reducer(state, action) {
           attr: action.data_attr,
           type: action.data_type ? action.data_type : state.data_sort.type == 'asc' ? 'desc' : 'asc'
         }
+      });
+    case 'SHOW_FILES_LIST':
+      return _extends({}, state, { list_type: 'dir' });
+    case 'SHOW_FILE_INFO':
+      return _extends({}, state, {
+        list_type: 'file',
+        file_info: action.info
       });
   }
 
@@ -2066,7 +2165,9 @@ var mapStateToProps = function mapStateToProps(state) {
     style: state.style,
     data: getDataList(state, splittedPath),
     data_sort: state.data_sort,
-    dataFunc: state.dataFunc
+    dataFunc: state.dataFunc,
+    list_type: state.list_type,
+    file_info: state.file_info
   };
 };
 
@@ -2080,39 +2181,46 @@ exports.mapStyleToProps = mapStyleToProps;
 "use strict";
 
 Object.defineProperty(exports, "__esModule", {
-	value: true
+  value: true
 });
 var foundationStyle = {
-	main_area: "small-12",
-	link: '',
-	navbar: {
-		area: "small-12",
-		btn: "primary button",
-		btn_group: "small button-group"
-	},
-	folder_view: {
-		table: "table-scroll hover",
-		name: 'text-left',
-		type: 'text-right',
-		size: 'text-right',
-		date: 'text-center'
-	},
-	icon: {
-		file: 'fi-page',
-		folder: 'fi-folder',
-		arrow_up: 'fi-arrow-up',
-		arrow_down: 'fi-arrow-down'
-	}
+  main_area: "small-12",
+  link: '',
+  navbar: {
+    area: "small-12",
+    btn: "primary button",
+    btn_group: "small button-group"
+  },
+  folder_view: {
+    table: "table-scroll hover",
+    name: 'text-left',
+    type: 'text-right',
+    size: 'text-right',
+    date: 'text-center'
+  },
+  file: {
+    main_area: 'callout',
+    pre: 'clearfix',
+    code: '',
+    date: 'help-text'
+  },
+  icon: {
+    file: 'fi-page',
+    folder: 'fi-folder',
+    arrow_up: 'fi-arrow-up',
+    arrow_down: 'fi-arrow-down',
+    back: 'float-right fi-x'
+  }
 };
 
 exports.foundationStyle = foundationStyle;
 var bootstrapStyle = {
-	main_area: "col-xs-12",
-	navbar: {
-		area: "col-xs-12",
-		btn: "btn btn-primary",
-		btn_group: "btn-group btn-group-sm btn-group-justified"
-	}
+  main_area: "col-xs-12",
+  navbar: {
+    area: "col-xs-12",
+    btn: "btn btn-primary",
+    btn_group: "btn-group btn-group-sm btn-group-justified"
+  }
 };
 exports.bootstrapStyle = bootstrapStyle;
 
