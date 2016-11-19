@@ -1655,22 +1655,22 @@ var File = _react2['default'].createClass({
         'td',
         { className: this.props.style.folder_view.name },
         _react2['default'].createElement('i', { className: this.props.style.folder_view.file }),
-        ' ' + this.state.name
+        ' ' + this.props.name
       ),
       _react2['default'].createElement(
         'td',
         { className: this.props.style.folder_view.type },
-        this.state.type == 'dir' ? 'DIR' : ''
+        'File'
       ),
       _react2['default'].createElement(
         'td',
         { className: this.props.style.folder_view.size },
-        this.state.size
+        this.props.size
       ),
       _react2['default'].createElement(
         'td',
         { className: this.props.style.folder_view.date },
-        this.state.date
+        this.props.date
       )
     );
   }
@@ -1696,13 +1696,13 @@ var Folder = _react2['default'].createClass({
               return _this.props.onClick(_this.props.name);
             } },
           _react2['default'].createElement('i', { className: this.props.style.folder_view.folder }),
-          ' ' + this.state.name
+          ' ' + this.props.name
         )
       ),
       _react2['default'].createElement(
         'td',
         { className: this.props.style.folder_view.type },
-        'Folder'
+        'Directory'
       ),
       _react2['default'].createElement('td', { className: this.props.style.folder_view.size }),
       _react2['default'].createElement('td', { className: this.props.style.folder_view.date })
@@ -1717,6 +1717,8 @@ exports.Folder = Folder;
 Object.defineProperty(exports, '__esModule', {
   value: true
 });
+
+var _extends = Object.assign || function (target) { for (var i = 1; i < arguments.length; i++) { var source = arguments[i]; for (var key in source) { if (Object.prototype.hasOwnProperty.call(source, key)) { target[key] = source[key]; } } } return target; };
 
 function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { 'default': obj }; }
 
@@ -1734,6 +1736,19 @@ var FolderViewComponent = _react2['default'].createClass({
   displayName: 'FolderViewComponent',
 
   render: function render() {
+    var _this = this;
+
+    var files = this.props.data.map(function (file, idx) {
+      if (file.type == 'dir') return _react2['default'].createElement(_folderViewComponent.Folder, _extends({ key: idx }, file, { style: _this.props.style,
+        onClick: function () {
+          return _this.props.dispatch({
+            type: 'NEXT_DIR', dir: file.name
+          });
+        } }));
+
+      return _react2['default'].createElement(_folderViewComponent.File, _extends({ key: idx }, file, { style: _this.props.style }));
+    });
+
     return _react2['default'].createElement(
       'table',
       { className: this.props.style.folder_view.table },
@@ -1765,7 +1780,11 @@ var FolderViewComponent = _react2['default'].createClass({
           )
         )
       ),
-      _react2['default'].createElement('tbody', null),
+      _react2['default'].createElement(
+        'tbody',
+        null,
+        files
+      ),
       _react2['default'].createElement(
         'tfoot',
         null,
@@ -1775,31 +1794,16 @@ var FolderViewComponent = _react2['default'].createClass({
           _react2['default'].createElement(
             'td',
             { colSpan: '4' },
-            _react2['default'].createElement(
-              'strong',
-              null,
-              'File:'
-            ),
-            ' - ',
-            _react2['default'].createElement(
-              'strong',
-              null,
-              'Size:'
-            )
+            'File: ',
+            this.props.data.length,
+            ' - Size: ',
+            this.props.data.reduce(function (prev, curr) {
+              return prev + parseInt(curr.size);
+            }, 0)
           )
         )
       )
     );
-  },
-  orderData: function orderData(attr, sort_type, data) {
-    return data.sort(function (a, b) {
-      var val = sort_type == 'asc' ? 1 : -1;
-
-      if (a[attr] < b[attr]) return -1 * val;
-      if (a[attr] > b[attr]) return +1 * val;
-
-      return 0;
-    });
   }
 });
 
@@ -1807,7 +1811,6 @@ var FolderView = (0, _reactRedux.connect)(_nenavStore.mapStateToProps)(FolderVie
 
 exports['default'] = FolderView;
 module.exports = exports['default'];
-/* files */ /* this.state.currPathData.length */ /* this.state.filesSize */
 
 },{"./folder-view-component":40,"./nenav-store":43,"react":undefined,"react-redux":5}],42:[function(require,module,exports){
 'use strict';
@@ -1832,9 +1835,7 @@ var NavigationBarComponent = _react2['default'].createClass({
   render: function render() {
     var _this = this;
 
-    var currPathBar = [].map(function (folder, idx) {
-      if (folder == '' && idx == 0) folder = 'root';
-
+    var currPathBar = this.props.path.map(function (folder, idx) {
       return _react2['default'].createElement(
         'button',
         { key: idx, className: _this.props.style.navbar.btn },
@@ -1880,14 +1881,24 @@ var initState = {
   }
 };
 
+var getSplittedPath = function getSplittedPath(path) {
+  return path.split('/').map(function (val, idx) {
+    if (idx == 0 && val == '') return 'root';
+
+    return val;
+  }).filter(function (val) {
+    return val != '';
+  });
+};
+
 var validatePath = function validatePath(state) {
   try {
-    var splittedPath = state.path.split('/');
+    var splittedPath = getSplittedPath(state.path);
     var verifiedPath = state.data;
     var analyzedPath = '';
 
     for (var idx in splittedPath) {
-      if (splittedPath[idx] == '' && idx == 0) {
+      if (splittedPath[idx] == 'root' && idx == 0) {
         if ('data' in state.data) {
           analyzedPath = '/';
           continue;
@@ -1899,11 +1910,8 @@ var validatePath = function validatePath(state) {
         analyzedPath += splittedPath[idx];
       } else throw new Error('Invalid folder: `' + splittedPath[idx] + '` in path: `' + analyzedPath + '`');
     }
-
-    return verifiedPath;
   } catch (e) {
-    console.error('React-Nenav: Error: pathExist (): ' + e.message);
-    youDontWantToSeeWhatHappenAfterThis();
+    console.error('React-Nenav: pathExist (): ' + e.message);
   }
 };
 
@@ -1926,39 +1934,67 @@ var reducer = function reducer(state, action) {
     case 'SET_DATA':
       return _extends({}, state, { data: action.data });
     case 'SET_SORT':
-      return _extends({}, state, { sort: action.sort });
+      return _extends({}, state, { data_sort: action.data_sort });
     case 'VALIDATE_PATH':
       validatePath(state);
       break;
+    case 'NEXT_DIR':
+      return _extends({}, state, { path: state.path + '/' + action.dir });
+    case 'PREV_DIR':
+      return _extends({}, state, {
+        path: state.path.split('/').slice(0, -1).join('/')
+      });
   }
 
   return state;
 };
 
 exports.reducer = reducer;
-var getDataList = function getDataList(data, sort) {
-  return Object.keys(data).map(function (file, idx) {
+var getDataList = function getDataList(state, path) {
+  var enterPath = state.data;
+
+  for (var idx in path) {
+    if (path[idx] == 'root' && idx == 0) continue;
+
+    enterPath = enterPath.data[path[idx]];
+  }
+
+  return Object.keys(enterPath.data).map(function (file, idx) {
     return _extends({}, {
       name: file,
-      type: data[file].type,
-      size: data[file].size,
-      date: data[file].date
+      type: enterPath.data[file].type,
+      size: enterPath.data[file].size ? enterPath.data[file].size : 0,
+      date: enterPath.data[file].date
     });
+  }).sort(function (a, b) {
+    var val = state.data_sort.type == 'asc' ? 1 : -1;
+
+    if (a.type == 'dir') {
+      if (b.type == 'dir' && state.data_sort.attr != 'name') return (a.name < b.name ? -1 : 1) * val;else return -1;
+    }
+
+    if (a[state.data_sort.attr] < b[state.data_sort.attr]) return -1 * val;
+    if (a[state.data_sort.attr] > b[state.data_sort.attr]) return +1 * val;
+
+    return 0;
   });
 };
 
 var mapStateToProps = function mapStateToProps(state) {
-  return {
-    path: state.path.split('/').map(function (val, idx) {
-      if (idx == 0 && val == '') return 'root';
+  var splittedPath = getSplittedPath(state.path);
 
-      return val;
-    }),
+  return {
+    path: splittedPath,
     style: state.style,
-    data: getDataList(state.data, state.sort)
+    data: getDataList(state, splittedPath)
   };
 };
+
 exports.mapStateToProps = mapStateToProps;
+var mapStyleToProps = function mapStyleToProps(state) {
+  return { style: state.style };
+};
+exports.mapStyleToProps = mapStyleToProps;
 
 },{"./nenav-styles":44}],44:[function(require,module,exports){
 "use strict";
@@ -2038,7 +2074,7 @@ var NenavViewComponent = _react2['default'].createClass({
 	}
 });
 
-var NenavView = (0, _reactRedux.connect)(_nenavStore.mapStateToProps)(NenavViewComponent);
+var NenavView = (0, _reactRedux.connect)(_nenavStore.mapStyleToProps)(NenavViewComponent);
 
 var Nenav = _react2['default'].createClass({
 	displayName: 'Nenav',
@@ -2047,13 +2083,13 @@ var Nenav = _react2['default'].createClass({
 		if ('data' in this.props) store.dispatch({ type: 'SET_DATA', data: this.props.data });
 
 		if ('path' in this.props) {
-			store.dispatch({ type: 'SET_PATH', path: this.props.data.path });
+			store.dispatch({ type: 'SET_PATH', path: this.props.path });
 			store.dispatch({ type: 'VALIDATE_PATH' });
 		}
 
 		if ('style' in this.props) store.dispatch({ type: 'SET_STYLE', style: this.props.style });
 
-		if ('sort' in this.props) store.dispatch({ type: 'SET_SORT', style: this.props.sort });
+		if ('data_sort' in this.props) store.dispatch({ type: 'SET_SORT', data_sort: this.props.data_sort });
 	},
 	render: function render() {
 		return _react2['default'].createElement(
