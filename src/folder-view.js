@@ -77,6 +77,10 @@ const ListFiles = React.createClass ({
 });
 
 const ShowFile = React.createClass ({
+  componentDidMount () {
+    if ( this.props.onMount )
+      this.props.onMount ();
+  },
   render () {
     return (
       <div className={this.props.style.file.main_area}>
@@ -90,9 +94,7 @@ const ShowFile = React.createClass ({
           </small>
         </h3>
         <pre className={this.props.style.file.pre}>
-          <code className={this.props.style.file.code}>
-            {this.props.content}
-          </code>
+          {this.props.content}
         </pre>
 
         <p className={this.props.style.file.date}>
@@ -143,7 +145,8 @@ const FolderViewComponent = React.createClass ({
              humanSize={this.humanSize}
              {...this.props.file_info}
              backFunc={this.hideFile}
-             style={this.props.style} />
+             style={this.props.style}
+             onMount={this.props.onMount} />
   },
   humanSize (byte_size) {
     let units = [ 'KB', 'MB', 'GB', 'TB' ];

@@ -10,7 +10,8 @@ const initState = {
   },
   dataFunc: console.log,
   list_type: 'dir',
-  file_info: null
+  file_info: null,
+  onMount: null
 };
 
 const getSplittedPath = (path) => {
@@ -66,6 +67,8 @@ export const reducer = (state = initState, action) => {
       return Object.assign ({}, state, { data: action.data });
     case 'SET_DATA_FUNC':
       return Object.assign ({}, state, { dataFunc: action.dataFunc });
+    case 'SET_ONMOUNT':
+      return Object.assign ({}, state, { onMount: action.onMount });
     case 'SET_SORT':
       return Object.assign ({}, state, { data_sort: action.data_sort });
     case 'VALIDATE_PATH':
@@ -148,7 +151,8 @@ export const mapStateToProps = (state) => {
     data_sort: state.data_sort,
     dataFunc: state.dataFunc,
     list_type: state.list_type,
-    file_info: state.file_info
+    file_info: state.file_info,
+    onMount: state.onMount
   }
 };
 

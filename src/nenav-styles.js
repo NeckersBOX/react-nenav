@@ -15,9 +15,8 @@ export const foundationStyle = {
 	},
   file: {
     main_area: 'callout',
-    pre: 'clearfix',
-    code: '',
-    date: 'help-text'
+    pre: 'prettyprint',
+    date: 'subheader'
   },
   icon: {
     file: 'fi-page',

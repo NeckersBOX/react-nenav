@@ -39,6 +39,9 @@ const Nenav = React.createClass ({
 
 		if ( 'dataFunc' in this.props )
 			store.dispatch ({ type: 'SET_DATA_FUNC', dataFunc: this.props.dataFunc });
+
+		if ( 'fileMountFunc' in this.props )
+			store.dispatch ({ type: 'SET_ONMOUNT', onMount: this.props.fileMountFunc });
 	},
 	render () {
 		return (
