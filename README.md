@@ -195,7 +195,7 @@ const nenav_conf = {
 ```
 
 You can pass it to **Nenav Component** with: `<Nenav {...nenav_conf} />`.
-_Note:_ When you want only the root path you don't have to use `/` but an empty string ``.
+_Note:_ When you want only the root path you don't have to use `/` but an empty string.
 
 #### Default configuration
 
