@@ -7,7 +7,8 @@ const initState = {
   data_sort: {
     attr: 'type',
     type: 'asc'
-  }
+  },
+  dataFunc: console.log
 };
 
 const getSplittedPath = (path) => {
@@ -61,6 +62,8 @@ export const reducer = (state = initState, action) => {
       return Object.assign ({}, state, { style: currStyle });
     case 'SET_DATA':
       return Object.assign ({}, state, { data: action.data });
+    case 'SET_DATA_FUNC':
+      return Object.assign ({}, state, { dataFunc: action.dataFunc });
     case 'SET_SORT':
       return Object.assign ({}, state, { data_sort: action.data_sort });
     case 'VALIDATE_PATH':
@@ -70,7 +73,16 @@ export const reducer = (state = initState, action) => {
       return Object.assign ({}, state, { path: state.path + '/' + action.dir });
     case 'PREV_DIR':
       return Object.assign ({}, state, {
-        path: state.path.split ('/').slice (0, -1).join ('/')
+        path: state.path.split ('/').slice (0, action.index + 1).join ('/')
+      });
+    case 'CHANGE_DATA_SORT':
+      return Object.assign ({}, state, {
+        data_sort: {
+          attr: action.data_attr,
+          type: action.data_type ? action.data_type : (
+            ( state.data_sort.type == 'asc' ) ? 'desc' : 'asc'
+          )
+        }
       });
   }
 
@@ -97,7 +109,7 @@ const getDataList = (state, path) => {
   ).sort ((a, b) => {
     let val = (state.data_sort.type == 'asc' ) ? 1 : -1;
 
-    if ( a.type == 'dir' ) {
+    if ( a.type == 'dir' && state.data_sort.attr != 'type' ) {
       if ( b.type == 'dir' && state.data_sort.attr != 'name' )
         return (( a.name < b.name ) ? -1 : 1) * val;
       else return -1;
@@ -117,7 +129,9 @@ export const mapStateToProps = (state) => {
   return {
     path: splittedPath,
     style: state.style,
-    data: getDataList (state, splittedPath)
+    data: getDataList (state, splittedPath),
+    data_sort: state.data_sort,
+    dataFunc: state.dataFunc
   }
 };
 

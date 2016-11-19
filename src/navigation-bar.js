@@ -6,7 +6,9 @@ const NavigationBarComponent = React.createClass ({
   render () {
 		let currPathBar = this.props.path.map ((folder, idx) => {
 			return (
-				<button key={idx} className={this.props.style.navbar.btn}>
+				<button key={idx} onClick={() => this.props.dispatch (
+          { type: 'PREV_DIR', index: idx }
+        )} className={this.props.style.navbar.btn}>
 					{folder}
 				</button>
 			);

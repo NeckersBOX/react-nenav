@@ -36,6 +36,9 @@ const Nenav = React.createClass ({
 
 		if ( 'data_sort' in this.props )
 			store.dispatch ({ type: 'SET_SORT', data_sort: this.props.data_sort });
+
+		if ( 'dataFunc' in this.props )
+			store.dispatch ({ type: 'SET_DATA_FUNC', dataFunc: this.props.dataFunc });
 	},
 	render () {
 		return (
