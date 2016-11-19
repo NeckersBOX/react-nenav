@@ -1,11 +1,10 @@
 import React from 'react';
+import { connect } from 'react-redux';
+import { mapStateToProps } from './nenav-store';
 
-const NavigationBar = React.createClass ({
-  getInitialState () {
-    return { currPathElements: this.props.currPath.split ('/') };
-  },
+const NavigationBarComponent = React.createClass ({
   render () {
-		let currPathBar = this.state.currPathElements.map ((folder, idx) => {
+		let currPathBar = [].map ((folder, idx) => {
 			if ( folder == '' && idx == 0 ) folder = 'root';
 
 			return (
@@ -24,5 +23,7 @@ const NavigationBar = React.createClass ({
     );
   }
 });
+
+const NavigationBar = connect (mapStateToProps)(NavigationBarComponent);
 
 export default NavigationBar;

@@ -1,22 +1,6 @@
 import React from 'react';
 
 export const File = React.createClass ({
-  getInitialState () {
-    return {
-      name: this.props.name,
-      size: this.props.size,
-      type: this.props.type,
-      date: this.props.date
-    }
-  },
-  componentWillReceiveProps () {
-    this.setState ({
-      name: this.props.name,
-      size: this.props.size,
-      type: this.props.type,
-      date: this.props.date
-    });
-  },
   render () {
     return (
       <tr>
@@ -39,12 +23,6 @@ export const File = React.createClass ({
 });
 
 export const Folder = React.createClass ({
-  getInitialState () {
-    return { name: this.props.name };
-  },
-  componentWillReceiveProps () {
-    this.setState ({ name: this.props.name });
-  },
   render () {
     return (
       <tr>
