@@ -29,7 +29,6 @@ const Nenav = React.createClass ({
 		this.analyzeProps ();
 	},
 	analyzeProps () {
-		console.log (this.props);
 		if ( 'data' in this.props )
 			store.dispatch ({ type: 'SET_DATA', data: this.props.data });
 
@@ -37,6 +36,7 @@ const Nenav = React.createClass ({
 			store.dispatch ({ type: 'SET_PATH', path: this.props.path });
 			store.dispatch ({ type: 'VALIDATE_PATH' });
 		}
+		else store.dispatch ({ type: 'SET_PATH', path: '' });
 
 		if ( 'style' in this.props )
 			store.dispatch ({ type: 'SET_STYLE', style: this.props.style });
