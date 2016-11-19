@@ -31,8 +31,7 @@ var path_data = {
 
 var nenav_conf = {
 	currPath: '/src',
-	orderAttr: 'type',
-	orderType: 'asc',
+	sort: { attr: 'type', type: 'asc' },
 	style: 'foundation'
 };
 
