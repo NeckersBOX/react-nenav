@@ -29,6 +29,7 @@ const Nenav = React.createClass ({
 		this.analyzeProps ();
 	},
 	analyzeProps () {
+		console.log (this.props);
 		if ( 'data' in this.props )
 			store.dispatch ({ type: 'SET_DATA', data: this.props.data });
 
