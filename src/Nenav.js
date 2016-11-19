@@ -23,6 +23,12 @@ const NenavView = connect (mapStyleToProps)(NenavViewComponent);
 
 const Nenav = React.createClass ({
 	componentDidMount () {
+		this.analyzeProps ();
+	},
+	componentDidUpdate () {
+		this.analyzeProps ();
+	},
+	analyzeProps () {
 		if ( 'data' in this.props )
 			store.dispatch ({ type: 'SET_DATA', data: this.props.data });
 
