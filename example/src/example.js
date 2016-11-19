@@ -24,9 +24,17 @@ const path_data = {
 	}
 };
 
+const getFileData = (file_path, resultFunc) => {
+	setTimeout (() => {
+		resultFunc ('<h1>File `' + file_path + '` Example</h1>');
+	}, 500);
+};
+
 const nenav_conf = {
 	path: '/src',
+	data: path_data,
 	data_sort: { attr: 'name', type: 'asc' },
+	dataFunc: getFileData,
 	style: 'foundation'
 };
 
@@ -34,7 +42,7 @@ var App = React.createClass({
 	render () {
 		return (
 			<div>
-				<Nenav data={path_data} {...nenav_conf} />
+				<Nenav {...nenav_conf} />
 			</div>
 		);
 	}

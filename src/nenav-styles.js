@@ -13,11 +13,18 @@ export const foundationStyle = {
 		size: 'text-right',
 		date: 'text-center'
 	},
+  file: {
+    main_area: 'callout',
+    pre: 'clearfix',
+    code: '',
+    date: 'help-text'
+  },
   icon: {
     file: 'fi-page',
     folder: 'fi-folder',
     arrow_up: 'fi-arrow-up',
-    arrow_down: 'fi-arrow-down'
+    arrow_down: 'fi-arrow-down',
+    back: 'float-right fi-x'
   }
 };
 

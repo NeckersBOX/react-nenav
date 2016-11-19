@@ -6,7 +6,7 @@ export const File = React.createClass ({
       <tr>
         <td className={this.props.style.folder_view.name}>
           <a className={this.props.style.link}
-            onClick={() => this.props.dataFunc (this.props.path + this.props.name)}>
+            onClick={() => this.props.onClick (this.props.path + this.props.name)}>
             <i className={this.props.style.icon.file}></i>
             {' ' + this.props.name}
           </a>

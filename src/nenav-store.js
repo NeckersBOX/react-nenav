@@ -8,7 +8,9 @@ const initState = {
     attr: 'type',
     type: 'asc'
   },
-  dataFunc: console.log
+  dataFunc: console.log,
+  list_type: 'dir',
+  file_info: null
 };
 
 const getSplittedPath = (path) => {
@@ -70,10 +72,16 @@ export const reducer = (state = initState, action) => {
       validatePath (state);
       break;
     case 'NEXT_DIR':
-      return Object.assign ({}, state, { path: state.path + '/' + action.dir });
+      return Object.assign ({}, state, {
+        path: state.path + '/' + action.dir,
+        list_type: 'dir',
+        file_info: null
+      });
     case 'PREV_DIR':
       return Object.assign ({}, state, {
-        path: state.path.split ('/').slice (0, action.index + 1).join ('/')
+        path: state.path.split ('/').slice (0, action.index + 1).join ('/'),
+        list_type: 'dir',
+        file_info: null
       });
     case 'CHANGE_DATA_SORT':
       return Object.assign ({}, state, {
@@ -83,6 +91,13 @@ export const reducer = (state = initState, action) => {
             ( state.data_sort.type == 'asc' ) ? 'desc' : 'asc'
           )
         }
+      });
+    case 'SHOW_FILES_LIST':
+      return Object.assign ({}, state, { list_type: 'dir' });
+    case 'SHOW_FILE_INFO':
+      return Object.assign ({}, state, {
+        list_type: 'file',
+        file_info: action.info
       });
   }
 
@@ -131,7 +146,9 @@ export const mapStateToProps = (state) => {
     style: state.style,
     data: getDataList (state, splittedPath),
     data_sort: state.data_sort,
-    dataFunc: state.dataFunc
+    dataFunc: state.dataFunc,
+    list_type: state.list_type,
+    file_info: state.file_info
   }
 };
 
