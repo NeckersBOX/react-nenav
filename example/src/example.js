@@ -25,8 +25,8 @@ const path_data = {
 };
 
 const nenav_conf = {
-	currPath: '/src',
-	sort: { attr: 'type', type: 'asc' },
+	path: '/src',
+	data_sort: { attr: 'name', type: 'asc' },
 	style: 'foundation'
 };
 

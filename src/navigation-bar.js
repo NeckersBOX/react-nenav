@@ -4,9 +4,7 @@ import { mapStateToProps } from './nenav-store';
 
 const NavigationBarComponent = React.createClass ({
   render () {
-		let currPathBar = [].map ((folder, idx) => {
-			if ( folder == '' && idx == 0 ) folder = 'root';
-
+		let currPathBar = this.props.path.map ((folder, idx) => {
 			return (
 				<button key={idx} className={this.props.style.navbar.btn}>
 					{folder}

@@ -5,6 +5,16 @@ import { File, Folder } from './folder-view-component';
 
 const FolderViewComponent = React.createClass ({
   render () {
+    let files = this.props.data.map ((file, idx) => {
+      if ( file.type == 'dir' )
+        return <Folder key={idx} {...file} style={this.props.style}
+                  onClick={() => this.props.dispatch ({
+                    type: 'NEXT_DIR', dir: file.name
+                  })}/>;
+
+      return <File key={idx} {...file} style={this.props.style} />;
+    });
+
     return (
       <table className={this.props.style.folder_view.table}>
         <thead>
@@ -16,31 +26,21 @@ const FolderViewComponent = React.createClass ({
           </tr>
         </thead>
         <tbody>
-          {/* files */}
+          {files}
         </tbody>
         <tfoot>
           <tr>
             <td colSpan="4">
-              <strong>File:</strong>
-              {/* this.state.currPathData.length */}
-              {' - '}
-              <strong>Size:</strong>
-              {/* this.state.filesSize */}
+              File: {this.props.data.length} - Size: {
+                this.props.data.reduce (
+                  (prev, curr) => (prev + parseInt (curr.size)), 0
+                )
+              }
             </td>
           </tr>
         </tfoot>
       </table>
     );
-  },
-  orderData (attr, sort_type, data) {
-    return data.sort ((a, b) => {
-      let val = (sort_type == 'asc' ) ? 1 : -1;
-
-      if ( a[attr] < b[attr] ) return -1 * val;
-      if ( a[attr] > b[attr] ) return +1 * val;
-
-      return 0;
-    });
   }
 });
 

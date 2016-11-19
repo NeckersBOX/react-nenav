@@ -1,5 +1,5 @@
 import { createStore } from 'redux';
-import { reducer, mapStateToProps } from './nenav-store';
+import { reducer, mapStyleToProps } from './nenav-store';
 import { connect, Provider } from 'react-redux';
 
 import React from 'react';
@@ -19,7 +19,7 @@ const NenavViewComponent = React.createClass ({
 	}
 });
 
-const NenavView = connect (mapStateToProps)(NenavViewComponent);
+const NenavView = connect (mapStyleToProps)(NenavViewComponent);
 
 const Nenav = React.createClass ({
 	componentDidMount () {
@@ -27,15 +27,15 @@ const Nenav = React.createClass ({
 			store.dispatch ({ type: 'SET_DATA', data: this.props.data });
 
 		if ( 'path' in this.props ) {
-			store.dispatch ({ type: 'SET_PATH', path: this.props.data.path });
+			store.dispatch ({ type: 'SET_PATH', path: this.props.path });
 			store.dispatch ({ type: 'VALIDATE_PATH' });
 		}
 
 		if ( 'style' in this.props )
 			store.dispatch ({ type: 'SET_STYLE', style: this.props.style });
 
-		if ( 'sort' in this.props )
-			store.dispatch ({ type: 'SET_SORT', style: this.props.sort });
+		if ( 'data_sort' in this.props )
+			store.dispatch ({ type: 'SET_SORT', data_sort: this.props.data_sort });
 	},
 	render () {
 		return (

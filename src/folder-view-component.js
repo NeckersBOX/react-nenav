@@ -6,16 +6,16 @@ export const File = React.createClass ({
       <tr>
         <td className={this.props.style.folder_view.name}>
           <i className={this.props.style.folder_view.file}></i>
-          {' ' + this.state.name}
+          {' ' + this.props.name}
         </td>
         <td className={this.props.style.folder_view.type}>
-          {this.state.type == 'dir' ? 'DIR' : ''}
+          File
         </td>
         <td className={this.props.style.folder_view.size}>
-          {this.state.size}
+          {this.props.size}
         </td>
         <td className={this.props.style.folder_view.date}>
-          {this.state.date}
+          {this.props.date}
         </td>
       </tr>
     );
@@ -30,11 +30,11 @@ export const Folder = React.createClass ({
           <a className={this.props.style.link}
             onClick={() => this.props.onClick (this.props.name)}>
             <i className={this.props.style.folder_view.folder}></i>
-            {' ' + this.state.name}
+            {' ' + this.props.name}
           </a>
         </td>
         <td className={this.props.style.folder_view.type}>
-          Folder
+          Directory
         </td>
         <td className={this.props.style.folder_view.size}></td>
         <td className={this.props.style.folder_view.date}></td>
