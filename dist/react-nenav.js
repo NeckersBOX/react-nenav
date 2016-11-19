@@ -1700,6 +1700,8 @@ var Nenav = _react2['default'].createClass({
 		if ('dataFunc' in this.props) store.dispatch({ type: 'SET_DATA_FUNC', dataFunc: this.props.dataFunc });
 
 		if ('fileMountFunc' in this.props) store.dispatch({ type: 'SET_ONMOUNT', onMount: this.props.fileMountFunc });
+
+		store.dispatch({ type: 'SHOW_FILES_LIST' });
 	},
 	render: function render() {
 		return _react2['default'].createElement(

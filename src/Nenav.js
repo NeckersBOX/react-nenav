@@ -49,6 +49,8 @@ const Nenav = React.createClass ({
 
 		if ( 'fileMountFunc' in this.props )
 			store.dispatch ({ type: 'SET_ONMOUNT', onMount: this.props.fileMountFunc });
+
+		store.dispatch ({ type: 'SHOW_FILES_LIST' });
 	},
 	render () {
 		return (
