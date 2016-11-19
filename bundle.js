@@ -1849,6 +1849,9 @@ var ListFiles = _react2['default'].createClass({
 var ShowFile = _react2['default'].createClass({
   displayName: 'ShowFile',
 
+  componentDidMount: function componentDidMount() {
+    if (this.props.onMount) this.props.onMount();
+  },
   render: function render() {
     return _react2['default'].createElement(
       'div',
@@ -1871,11 +1874,7 @@ var ShowFile = _react2['default'].createClass({
       _react2['default'].createElement(
         'pre',
         { className: this.props.style.file.pre },
-        _react2['default'].createElement(
-          'code',
-          { className: this.props.style.file.code },
-          this.props.content
-        )
+        this.props.content
       ),
       _react2['default'].createElement(
         'p',
@@ -1930,7 +1929,8 @@ var FolderViewComponent = _react2['default'].createClass({
       humanSize: this.humanSize
     }, this.props.file_info, {
       backFunc: this.hideFile,
-      style: this.props.style }));
+      style: this.props.style,
+      onMount: this.props.onMount }));
   },
   humanSize: function humanSize(byte_size) {
     var units = ['KB', 'MB', 'GB', 'TB'];
@@ -2033,7 +2033,8 @@ var initState = {
   },
   dataFunc: console.log,
   list_type: 'dir',
-  file_info: null
+  file_info: null,
+  onMount: null
 };
 
 var getSplittedPath = function getSplittedPath(path) {
@@ -2090,6 +2091,8 @@ var reducer = function reducer(state, action) {
       return _extends({}, state, { data: action.data });
     case 'SET_DATA_FUNC':
       return _extends({}, state, { dataFunc: action.dataFunc });
+    case 'SET_ONMOUNT':
+      return _extends({}, state, { onMount: action.onMount });
     case 'SET_SORT':
       return _extends({}, state, { data_sort: action.data_sort });
     case 'VALIDATE_PATH':
@@ -2167,7 +2170,8 @@ var mapStateToProps = function mapStateToProps(state) {
     data_sort: state.data_sort,
     dataFunc: state.dataFunc,
     list_type: state.list_type,
-    file_info: state.file_info
+    file_info: state.file_info,
+    onMount: state.onMount
   };
 };
 
@@ -2200,9 +2204,8 @@ var foundationStyle = {
   },
   file: {
     main_area: 'callout',
-    pre: 'clearfix',
-    code: '',
-    date: 'help-text'
+    pre: 'prettyprint',
+    date: 'subheader'
   },
   icon: {
     file: 'fi-page',
@@ -2284,6 +2287,8 @@ var Nenav = _react2['default'].createClass({
 		if ('data_sort' in this.props) store.dispatch({ type: 'SET_SORT', data_sort: this.props.data_sort });
 
 		if ('dataFunc' in this.props) store.dispatch({ type: 'SET_DATA_FUNC', dataFunc: this.props.dataFunc });
+
+		if ('fileMountFunc' in this.props) store.dispatch({ type: 'SET_ONMOUNT', onMount: this.props.fileMountFunc });
 	},
 	render: function render() {
 		return _react2['default'].createElement(

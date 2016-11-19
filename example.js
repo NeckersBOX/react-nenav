@@ -38,6 +38,7 @@ var nenav_conf = {
 	data: path_data,
 	data_sort: { attr: 'name', type: 'asc' },
 	dataFunc: getFileData,
+	fileMountFunc: PR.prettyPrint,
 	style: 'foundation'
 };
 
